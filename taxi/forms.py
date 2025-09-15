@@ -2,13 +2,16 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-from taxi.models import Driver, Car
+from taxi.models import Car
+
+
+User = get_user_model()
 
 
 class DriverCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
-        model = Driver
+        model = User
         fields = UserCreationForm.Meta.fields + (
             "license_number",
             "first_name",
@@ -36,7 +39,7 @@ class CarForm(forms.ModelForm):
 class DriverLicenseUpdateForm(forms.ModelForm):
 
     class Meta:
-        model = Driver
+        model = User
         fields = ("license_number",)
 
     def clean_license_number(self):
@@ -49,10 +52,11 @@ def license_verification(license_number):
     min_license_length = 8
 
     if len(license_number) != min_license_length:
-        raise forms.ValidationError("License number must have 8 symbols ")
+        raise forms.ValidationError(
+            "License number must be exactly 8 characters.")
     elif not all(ch.isupper() for ch in license_number[:3]):
         raise forms.ValidationError(
-            "License number must starts with 3 litters in uppercase "
+            "First 3 characters must be uppercase letters (A–Z)."
         )
     elif not license_number[3:].isdigit():
-        raise forms.ValidationError("License number must ends in 5 digits")
+        raise forms.ValidationError("Last 5 characters must be digits (0–9).")
