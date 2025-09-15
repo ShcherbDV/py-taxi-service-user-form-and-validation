@@ -132,6 +132,7 @@ class DriverCreateView(LoginRequiredMixin, generic.CreateView):
 
 class DriverDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = User
+    context_object_name = "driver"
     success_url = reverse_lazy("taxi:driver-list")
 
     def get_context_data(self, **kwargs):

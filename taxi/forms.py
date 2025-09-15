@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -54,9 +56,7 @@ def license_verification(license_number):
     if len(license_number) != min_license_length:
         raise forms.ValidationError(
             "License number must be exactly 8 characters.")
-    elif not all(ch.isupper() for ch in license_number[:3]):
-        raise forms.ValidationError(
-            "First 3 characters must be uppercase letters (A–Z)."
-        )
-    elif not license_number[3:].isdigit():
-        raise forms.ValidationError("Last 5 characters must be digits (0–9).")
+    elif not isinstance(license_number, str) or not re.match(
+        r"^[A-Z]{3}[0-9]{5}$", license_number
+    ):
+        raise forms.ValidationError("Please enter correct license number.")
