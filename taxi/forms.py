@@ -51,12 +51,8 @@ class DriverLicenseUpdateForm(forms.ModelForm):
 
 
 def license_verification(license_number):
-    min_license_length = 8
 
-    if len(license_number) != min_license_length:
-        raise forms.ValidationError(
-            "License number must be exactly 8 characters.")
-    elif not isinstance(license_number, str) or not re.match(
+    if not isinstance(license_number, str) or not re.match(
         r"^[A-Z]{3}[0-9]{5}$", license_number
     ):
         raise forms.ValidationError("Please enter correct license number.")
